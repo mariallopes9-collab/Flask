@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pesquisa – Python & POO</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0b0c10;
+            --surface: #12141a;
+            --border: #1e2130;
+            --accent: #00e5ff;
+            --accent2: #7c3aed;
+            --accent3: #f59e0b;
+            --text: #e2e8f0;
+            --muted: #64748b;
+            --code-bg: #0d1117;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Syne', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ── GRID NOISE BACKGROUND ── */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(0, 229, 255, .03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 229, 255, .03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ── GLOW BLOBS ── */
+        .blob {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(120px);
+            pointer-events: none;
+            z-index: 0;
+            opacity: .18;
+        }
+
+        .blob-1 {
+            width: 500px;
+            height: 500px;
+            background: var(--accent);
+            top: -150px;
+            left: -150px;
+            animation: drift 14s ease-in-out infinite alternate;
+        }
+
+        .blob-2 {
+            width: 400px;
+            height: 400px;
+            background: var(--accent2);
+            bottom: -100px;
+            right: -100px;
+            animation: drift 18s ease-in-out infinite alternate-reverse;
+        }
+
+        @keyframes drift {
+            from {
+                transform: translate(0, 0);
+            }
+
+            to {
+                transform: translate(40px, 30px);
+            }
+        }
+
+        /* ── WRAPPER ── */
+        .wrapper {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 3rem 1.5rem 6rem;
+        }
+
+        /* ── HERO ── */
+        .hero {
+            text-align: center;
+            padding: 4rem 0 3rem;
+        }
+
+        .hero .tag {
+            display: inline-block;
+            font-family: 'Space Mono', monospace;
+            font-size: .7rem;
+            letter-spacing: .15em;
+            text-transform: uppercase;
+            color: var(--accent);
+            border: 1px solid rgba(0, 229, 255, .35);
+            padding: .3rem .9rem;
+            border-radius: 2px;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.4rem, 6vw, 4.5rem);
+            font-weight: 800;
+            line-height: 1.05;
+            letter-spacing: -.02em;
+        }
+
+        .hero h1 span {
+            color: var(--accent);
+        }
+
+        .hero p {
+            margin-top: 1.2rem;
+            color: var(--muted);
+            font-size: 1rem;
+            max-width: 520px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.7;
+        }
+
+        /* ── DIVIDER ── */
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 3rem 0 2rem;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .divider span {
+            font-family: 'Space Mono', monospace;
+            font-size: .65rem;
+            letter-spacing: .2em;
+            text-transform: uppercase;
+            color: var(--muted);
+            white-space: nowrap;
+        }
+
+        /* ── SECTION CARD ── */
+        .section-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2.2rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            animation: fadeUp .6s ease both;
+        }
+
+        .section-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent), var(--accent2));
+            border-radius: 12px 12px 0 0;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(24px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section-card:nth-child(2) {
+            animation-delay: .1s;
+        }
+
+        .section-card:nth-child(3) {
+            animation-delay: .2s;
+        }
+
+        .section-card:nth-child(4) {
+            animation-delay: .3s;
+        }
+
+        .section-card .label {
+            font-family: 'Space Mono', monospace;
+            font-size: .65rem;
+            letter-spacing: .2em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: .8rem;
+        }
+
+        .section-card h2 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            letter-spacing: -.01em;
+            margin-bottom: 1.2rem;
+        }
+
+        .section-card p {
+            color: #94a3b8;
+            line-height: 1.8;
+            font-size: .97rem;
+            margin-bottom: 1rem;
+        }
+
+        .section-card p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* ── LIST ── */
+        .feature-list {
+            list-style: none;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: .8rem;
+            margin-top: 1.2rem;
+        }
+
+        .feature-list li {
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: .9rem 1rem;
+            font-size: .88rem;
+            display: flex;
+            align-items: flex-start;
+            gap: .6rem;
+            color: #cbd5e1;
+            line-height: 1.5;
+        }
+
+        /* ── PILLAR GRID (POO) ── */
+        .pillars {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(185px, 1fr));
+            gap: 1rem;
+            margin-top: 1.4rem;
+        }
+
+        .pillar {
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.2rem 1rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: transform .2s, border-color .2s;
+        }
+
+        .pillar:hover {
+            transform: translateY(-4px);
+            border-color: var(--accent2);
+        }
+
+        .pillar h3 {
+            font-size: .95rem;
+            font-weight: 700;
+            margin-bottom: .4rem;
+            color: var(--text);
+        }
+
+        .pillar p {
+            font-size: .8rem;
+            color: var(--muted);
+            line-height: 1.5;
+        }
+
+        /* ── CODE BLOCK ── */
+        .code-wrap {
+            margin-top: 1.4rem;
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .code-header {
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+            padding: .6rem 1rem;
+            background: #0a0c12;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .code-header .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .dot-r {
+            background: #ff5f57;
+        }
+
+        .dot-y {
+            background: #febc2e;
+        }
+
+        .dot-g {
+            background: #28c840;
+        }
+
+        .code-header .filename {
+            margin-left: .5rem;
+            font-family: 'Space Mono', monospace;
+            font-size: .72rem;
+            color: var(--muted);
+        }
+
+        pre {
+            font-family: 'Space Mono', monospace;
+            font-size: .78rem;
+            line-height: 1.7;
+            padding: 1.3rem 1.4rem;
+            overflow-x: auto;
+            color: #a5f3fc;
+        }
+
+        .kw {
+            color: #c084fc;
+        }
+
+        /* keywords */
+        .fn {
+            color: #38bdf8;
+        }
+
+        /* functions/class */
+        .st {
+            color: #86efac;
+        }
+
+        /* strings */
+        .cm {
+            color: #475569;
+            font-style: italic;
+        }
+
+        /* comments */
+        .nm {
+            color: #fbbf24;
+        }
+
+        /* numbers/names */
+
+        /* ── BACKEND DEMO BOX ── */
+        .demo-box {
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.6rem;
+            margin-top: 1.4rem;
+        }
+
+        .demo-box h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: .5rem;
+            color: var(--accent3);
+        }
+
+        .demo-box p {
+            font-size: .87rem;
+            color: var(--muted);
+            line-height: 1.7;
+            margin-bottom: .8rem;
+        }
+
+        .route-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: .5rem;
+        }
+
+        .route-list li {
+            font-family: 'Space Mono', monospace;
+            font-size: .78rem;
+            display: flex;
+            align-items: center;
+            gap: .8rem;
+        }
+
+        .method {
+            padding: .2rem .6rem;
+            border-radius: 4px;
+            font-size: .65rem;
+            font-weight: 700;
+            letter-spacing: .05em;
+        }
+
+        .get {
+            background: rgba(34, 197, 94, .15);
+            color: #4ade80;
+            border: 1px solid rgba(34, 197, 94, .3);
+        }
+
+        .post {
+            background: rgba(250, 204, 21, .12);
+            color: #fbbf24;
+            border: 1px solid rgba(250, 204, 21, .3);
+        }
+
+        .route-list li .path {
+            color: #7dd3fc;
+        }
+
+        .route-list li .desc {
+            color: var(--muted);
+            margin-left: .3rem;
+        }
+
+        /* ── FOOTER ── */
+        footer {
+            text-align: center;
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+            font-size: .8rem;
+            color: var(--muted);
+            font-family: 'Space Mono', monospace;
+        }
+
+        footer span {
+            color: var(--accent);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+
+    <div class="wrapper">
+
+        <!-- HERO -->
+        <header class="hero">
+            <div class="tag">Atividade de Pesquisa</div>
+            <h1>Python &amp;<br><span>Orientação a Objetos</span></h1>
+            <p>Explorando a comunicação entre Front End e Back End, e os conceitos fundamentais da linguagem Python e do
+                paradigma POO.</p>
+        </header>
+
+        <!-- ── SEÇÃO 1: O QUE É PYTHON ── -->
+        <div class="divider"><span>01 — O que é Python?</span></div>
+
+        <div class="section-card">
+            <div class="label">Linguagem de Programação</div>
+            <h2>Conhecendo o Python</h2>
+            <p>Python é uma linguagem de programação de alto nível, interpretada e de propósito geral, criada por
+                <strong>Guido van Rossum</strong> e lançada em 1991. Seu design prioriza a <em>legibilidade do
+                    código</em>, usando identação (espaços) para definir blocos, o que torna o código quase tão legível
+                quanto texto em inglês.</p>
+            <p>É uma linguagem <strong>multiparadigma</strong>: suporta programação imperativa, funcional e orientada a
+                objetos — e possui tipagem dinâmica e gerenciamento automático de memória.</p>
+
+            <ul class="feature-list">
+                <li> <span><strong>Web</strong> — servidores, APIs REST, microsserviços
+                        (Flask, Django, FastAPI)</span></li>
+                <li> <span><strong>IA & Machine Learning</strong> — TensorFlow, PyTorch,
+                        scikit-learn</span></li>
+                <li> <span><strong>Ciência de Dados</strong> — análise e visualização com
+                        Pandas e Matplotlib</span></li>
+                <li> <span><strong>Automação</strong> — scripts, bots, automação de tarefas
+                        repetitivas</span></li>
+                <li> <span><strong>Segurança</strong> — testes de penetração e ferramentas
+                        de cibersegurança</span></li>
+                <li> <span><strong>Games</strong> — prototipagem rápida de jogos com
+                        Pygame</span></li>
+            </ul>
+        </div>
+
+        <!-- ── SEÇÃO 2: VANTAGENS ── -->
+        <div class="section-card">
+            <div class="label">Carreira & Mercado</div>
+            <h2>Vantagens Profissionais</h2>
+            <p>Python é a linguagem mais popular do mundo segundo o índice TIOBE e o Stack Overflow Survey. Dominar
+                Python abre portas em praticamente todas as áreas de tecnologia.</p>
+
+            <ul class="feature-list">
+                <li> <span><strong>Alta demanda</strong> no mercado — empresas de todos os
+                        setores buscam desenvolvedores Python</span></li>
+                <li><span><strong>Salários competitivos</strong> — especialmente para Data
+                        Science, IA e Back End</span></li>
+                <li> <span><strong>Produtividade</strong> — sintaxe clara = código mais
+                        rápido de escrever e manter</span></li>
+                <li> <span><strong>Ecossistema enorme</strong> — mais de 400 mil pacotes no
+                        PyPI para praticamente tudo</span></li>
+                <li> <span><strong>Fácil aprendizado</strong> — ideal para iniciantes, mas
+                        poderoso o suficiente para especialistas</span></li>
+                <li> <span><strong>Comunidade global</strong> — vasta documentação,
+                        tutoriais e suporte online</span></li>
+            </ul>
+        </div>
+
+        <!-- ── SEÇÃO 3: POO ── -->
+        <div class="divider"><span>02 — POO</span></div>
+
+        <div class="section-card">
+            <div class="label">Paradigma de Programação</div>
+            <h2>Programação Orientada a Objetos</h2>
+            <p>A <strong>Programação Orientada a Objetos (POO)</strong> é um paradigma que organiza o software em torno
+                de <em>objetos</em> — entidades que combinam <strong>dados (atributos)</strong> e <strong>comportamentos
+                    (métodos)</strong>. Em vez de escrever uma série de funções soltas, modelamos o mundo real em
+                "moldes" chamados <strong>classes</strong>.</p>
+            <p>Uma classe é como uma planta baixa; um objeto é a casa construída a partir dela. Podemos criar quantos
+                objetos quisermos a partir de uma mesma classe.</p>
+
+            <div class="pillars">
+                <div class="pillar">
+                    <h3>Encapsulamento</h3>
+                    <p>Oculta os detalhes internos e expõe apenas o necessário, protegendo os dados.</p>
+                </div>
+                <div class="pillar">
+                    <h3>Herança</h3>
+                    <p>Uma classe filha herda atributos e métodos da classe pai, evitando repetição de código.</p>
+                </div>
+                <div class="pillar">
+                    <h3>Polimorfismo</h3>
+                    <p>O mesmo método pode se comportar de formas diferentes dependendo do objeto que o usa.</p>
+                </div>
+                <div class="pillar">
+                    <h3>Abstração</h3>
+                    <p>Simplifica a complexidade, focando apenas nos aspectos relevantes do problema.</p>
+                </div>
+            </div>
+
+            <!-- Vantagens POO -->
+            <div style="margin-top:1.8rem">
+                <p><strong style="color:var(--text)">Por que usar POO?</strong></p>
+                <ul class="feature-list" style="margin-top:.8rem">
+                    <li><span><strong>Reuso de código</strong> — escreva uma vez, use em
+                            muitos lugares via herança</span></li>
+                    <li> <span><strong>Manutenção fácil</strong> — alterações isoladas em
+                            uma classe não quebram o restante</span></li>
+                    <li> <span><strong>Organização</strong> — código estruturado em módulos
+                            lógicos e intuitivos</span></li>
+                    <li> <span><strong>Trabalho em equipe</strong> — cada desenvolvedor
+                            trabalha em sua classe sem conflito</span></li>
+                </ul>
+            </div>
+
+        <footer>
+            <p>Feito com <span>Python + Flask + HTML/CSS</span> &mdash; Malu (I2P3 - B)</p>
+        </footer>
+
+    </div>
+</body>
+
+</html>
